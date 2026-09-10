@@ -128,3 +128,17 @@ Open `http://localhost:5173` in your browser.
 
 ## ????? Author
 - **Khushi Singhal** ([@Khushi-Singhal7](https://github.com/Khushi-Singhal7))
+
+---
+
+## ?? 1-Click Free Cloud Deployment (Render.com)
+
+You can deploy this full-stack application (React UI + Java Spring Boot + H2 Database) for **free on Render.com**:
+
+1. Go to **[dashboard.render.com](https://dashboard.render.com)** and sign in with GitHub.
+2. Click **New +** ? **Web Service**.
+3. Select your repository: **`Khushi-Singhal7/qa-issue-logger`**.
+4. Render will automatically detect the **Dockerfile**!
+5. Select the **Free** instance type.
+6. Click **Deploy Web Service**!
+7. Render will build and launch your live application at `https://qa-issue-logger.onrender.com`.
