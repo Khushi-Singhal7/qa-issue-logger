@@ -656,29 +656,15 @@ export const App: React.FC = () => {
               )}
             </div>
 
-            <div className="flex items-center gap-2 self-start sm:self-auto">
-              <span
-                className={`inline-flex items-center gap-1.5 px-3 py-1 bg-white dark:bg-slate-900 border rounded-full text-xs font-medium shadow-2xs transition ${
-                  isBackendOnline
-                    ? 'border-emerald-300 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300'
-                    : 'border-slate-200/90 dark:border-slate-800 text-slate-600 dark:text-slate-300'
-                }`}
-              >
-                {isBackendOnline ? (
-                  <>
-                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                    <span className="hidden sm:inline">Connected to Java Spring Boot (H2 Database)</span>
-                    <span className="sm:hidden font-semibold">Java Spring Boot Live</span>
-                  </>
-                ) : (
-                  <>
-                    <Sparkles className="w-3.5 h-3.5 text-blue-500" />
-                    <span className="hidden sm:inline">IndexedDB Persistent Storage (Offline)</span>
-                    <span className="sm:hidden font-semibold">IndexedDB (Local)</span>
-                  </>
-                )}
-              </span>
-            </div>
+            {isBackendOnline && (
+              <div className="flex items-center gap-2 self-start sm:self-auto">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-white dark:bg-slate-900 border border-emerald-300 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 rounded-full text-xs font-medium shadow-2xs transition">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                  <span className="hidden sm:inline">Connected to Java Spring Boot (H2 Database)</span>
+                  <span className="sm:hidden font-semibold">Java Spring Boot Live</span>
+                </span>
+              </div>
+            )}
           </div>
         )}
 

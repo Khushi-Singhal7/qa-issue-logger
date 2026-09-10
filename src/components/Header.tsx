@@ -102,31 +102,6 @@ export const Header: React.FC<HeaderProps> = ({
                   <span className="xs:hidden">QA Logger</span>
                   <span className="hidden xs:inline">QA Issue Logger</span>
                 </span>
-                <span className="hidden sm:inline-block px-1.5 py-0.2 text-[10px] font-bold tracking-wider uppercase bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 rounded-md">
-                  Pro
-                </span>
-                {/* Live Backend Indicator Badge */}
-                <div
-                  title={
-                    isBackendOnline
-                      ? 'Connected to Java Spring Boot & H2 Database (port 3001)'
-                      : 'Offline Mode: Saving to browser IndexedDB'
-                  }
-                  className={`hidden md:inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-semibold rounded-full border transition cursor-default ${
-                    isBackendOnline
-                      ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-800'
-                      : 'bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border-amber-300 dark:border-amber-800'
-                  }`}
-                >
-                  <span
-                    className={`w-2 h-2 rounded-full ${
-                      isBackendOnline
-                        ? 'bg-emerald-500 animate-pulse'
-                        : 'bg-amber-500'
-                    }`}
-                  />
-                  <span>{isBackendOnline ? 'Java Spring Boot Live' : 'Offline (Local)'}</span>
-                </div>
               </div>
               <p className="text-[11px] text-slate-500 dark:text-slate-400 hidden xl:block">
                 Defect Tracking & Test Management Workspace
@@ -344,17 +319,6 @@ export const Header: React.FC<HeaderProps> = ({
         {/* Mobile Dropdown Menu Drawer */}
         {isMobileMenuOpen && (
           <div className="lg:hidden py-3 border-t border-slate-200 dark:border-slate-800 space-y-3 animate-fadeIn">
-            {/* Backend status row for mobile */}
-            <div className="flex items-center justify-between px-3 py-2 bg-slate-100 dark:bg-slate-800/60 rounded-xl text-xs">
-              <span className="text-slate-500 dark:text-slate-400 font-medium">Database Backend</span>
-              <span className={`inline-flex items-center gap-1.5 font-bold ${
-                isBackendOnline ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'
-              }`}>
-                <span className={`w-2 h-2 rounded-full ${isBackendOnline ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'}`} />
-                {isBackendOnline ? 'Java Spring Boot Live' : 'IndexedDB (Offline)'}
-              </span>
-            </div>
-
             {/* Mobile Project Management Section */}
             <div className="p-3 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200/80 dark:border-slate-700/80 space-y-2.5">
               <div className="flex items-center justify-between">
