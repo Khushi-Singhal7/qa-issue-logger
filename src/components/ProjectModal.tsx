@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, FolderPlus } from 'lucide-react';
+import { X, FolderPlus, Trash2 } from 'lucide-react';
 import { Project } from '../types/issue';
 
 interface ProjectModalProps {
@@ -7,6 +7,7 @@ interface ProjectModalProps {
   initialProject?: Project | null;
   onClose: () => void;
   onSave: (projectData: { name: string; prefix: string; description?: string }) => Promise<void>;
+  onDelete?: () => void;
 }
 
 export const ProjectModal: React.FC<ProjectModalProps> = ({
@@ -14,6 +15,7 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({
   initialProject,
   onClose,
   onSave,
+  onDelete,
 }) => {
   const isEdit = !!initialProject;
   const [name, setName] = useState('');
@@ -147,21 +149,38 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({
             />
           </div>
 
-          <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-200 dark:border-slate-800">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 rounded-xl transition"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="px-5 py-2 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-500 active:bg-blue-700 rounded-xl shadow-md shadow-blue-500/20 transition disabled:opacity-50"
-            >
-              {isSubmitting ? 'Saving...' : isEdit ? 'Update Project' : 'Create Project'}
-            </button>
+          <div className="flex items-center justify-between gap-3 pt-3 border-t border-slate-200 dark:border-slate-800">
+            {isEdit && onDelete ? (
+              <button
+                type="button"
+                onClick={() => {
+                  onClose();
+                  onDelete();
+                }}
+                className="flex items-center gap-1.5 px-3 py-2 text-xs font-bold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-xl transition border border-red-200 dark:border-red-900/60"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                <span>Delete Project</span>
+              </button>
+            ) : (
+              <div />
+            )}
+            <div className="flex items-center gap-2.5">
+              <button
+                type="button"
+                onClick={onClose}
+                className="px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 rounded-xl transition"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="px-5 py-2 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-500 active:bg-blue-700 rounded-xl shadow-md shadow-blue-500/20 transition disabled:opacity-50"
+              >
+                {isSubmitting ? 'Saving...' : isEdit ? 'Update Project' : 'Create Project'}
+              </button>
+            </div>
           </div>
         </form>
       </div>

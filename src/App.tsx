@@ -31,7 +31,7 @@ import {
   apiBulkDeleteIssues,
   apiSyncData,
 } from './services/api';
-import { Sparkles, CheckCircle2, Keyboard, Database } from 'lucide-react';
+import { Sparkles, CheckCircle2, Keyboard, Database, Edit3, Trash2 } from 'lucide-react';
 
 export const App: React.FC = () => {
   const [activeProjectId, setActiveProjectId] = useState<string>(() => {
@@ -641,13 +641,39 @@ export const App: React.FC = () => {
         {activeProject && (
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4 sm:mb-5">
             <div>
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
                   {activeProject.name}
                 </h1>
                 <span className="px-2 py-0.5 text-xs font-mono font-bold bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-md">
                   {activeProject.prefix}
                 </span>
+
+                {/* Visible Edit & Delete Project Action Buttons */}
+                <div className="flex items-center gap-1.5 ml-1">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setEditingProject(activeProject);
+                      setIsProjectModalOpen(true);
+                    }}
+                    title="Edit project settings"
+                    className="flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 rounded-lg transition shadow-2xs cursor-pointer active:scale-95"
+                  >
+                    <Edit3 className="w-3.5 h-3.5" />
+                    <span>Edit</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleDeleteProjectClick}
+                    title="Delete this project"
+                    className="flex items-center gap-1 px-2.5 py-1 text-xs font-bold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 bg-white dark:bg-slate-800 border border-red-200 dark:border-red-900/60 rounded-lg transition shadow-2xs cursor-pointer active:scale-95"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    <span>Delete Project</span>
+                  </button>
+                </div>
               </div>
               {activeProject.description && (
                 <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
@@ -776,6 +802,7 @@ export const App: React.FC = () => {
           setEditingProject(null);
         }}
         onSave={handleSaveProject}
+        onDelete={handleDeleteProjectClick}
       />
 
       <ConfirmationModal
