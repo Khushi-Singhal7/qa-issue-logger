@@ -360,7 +360,7 @@ export const IssueTable: React.FC<IssueTableProps> = ({
                     </div>
 
                     {/* Card Footer: Date, Status Selector, Actions */}
-                    <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2 mt-2">
+                    <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex flex-wrap items-center justify-between gap-2 mt-2">
                       <span className="text-[11px] font-mono text-slate-400">
                         {issue.date}
                       </span>
@@ -730,7 +730,7 @@ export const IssueTable: React.FC<IssueTableProps> = ({
 
       {/* Floating Bulk Actions Bar */}
       {selectedIds.size > 0 && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-slate-950/95 dark:bg-slate-800/95 backdrop-blur-md text-white rounded-2xl shadow-2xl px-4 py-3 flex flex-wrap items-center justify-center gap-3 border border-slate-700 animate-scaleIn">
+        <div className="fixed bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-40 bg-slate-950/95 dark:bg-slate-800/95 backdrop-blur-md text-white rounded-2xl shadow-2xl px-3 sm:px-4 py-2 sm:py-3 flex flex-wrap items-center justify-center gap-2 sm:gap-3 border border-slate-700 max-w-[95vw] w-max animate-scaleIn">
           <span className="text-xs font-bold text-slate-200 whitespace-nowrap">
             {selectedIds.size} issue{selectedIds.size > 1 ? 's' : ''} selected
           </span>

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import {
   Bug,
   FolderKanban,
@@ -62,7 +62,23 @@ export const Header: React.FC<HeaderProps> = ({
   isBackendOnline = false,
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const projectDropdownRef = useRef<HTMLDivElement>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isProjectDropdownOpen, setIsProjectDropdownOpen] = useState(false);
+
+  // Close project dropdown on click outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        projectDropdownRef.current &&
+        !projectDropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsProjectDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -73,17 +89,18 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <header className="sticky top-0 z-30 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800 shadow-xs transition-colors duration-200">
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 gap-2 sm:gap-4">
+      <div className="max-w-7xl mx-auto px-2.5 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16 gap-1.5 sm:gap-4">
           {/* App Brand Logo */}
-          <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
-            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20 active:scale-95 transition-transform">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20 active:scale-95 transition-transform shrink-0">
               <Bug className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
             <div>
               <div className="flex items-center gap-1.5 sm:gap-2">
-                <span className="font-extrabold text-sm sm:text-lg tracking-tight text-slate-900 dark:text-white">
-                  QA Issue Logger
+                <span className="font-extrabold text-xs xs:text-sm sm:text-lg tracking-tight text-slate-900 dark:text-white">
+                  <span className="xs:hidden">QA Logger</span>
+                  <span className="hidden xs:inline">QA Issue Logger</span>
                 </span>
                 <span className="hidden sm:inline-block px-1.5 py-0.2 text-[10px] font-bold tracking-wider uppercase bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 rounded-md">
                   Pro
@@ -95,7 +112,7 @@ export const Header: React.FC<HeaderProps> = ({
                       ? 'Connected to Java Spring Boot & H2 Database (port 3001)'
                       : 'Offline Mode: Saving to browser IndexedDB'
                   }
-                  className={`hidden sm:inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-semibold rounded-full border transition cursor-default ${
+                  className={`hidden md:inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-semibold rounded-full border transition cursor-default ${
                     isBackendOnline
                       ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-800'
                       : 'bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border-amber-300 dark:border-amber-800'
@@ -111,7 +128,7 @@ export const Header: React.FC<HeaderProps> = ({
                   <span>{isBackendOnline ? 'Java Spring Boot Live' : 'Offline (Local)'}</span>
                 </div>
               </div>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400 hidden lg:block">
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 hidden xl:block">
                 Defect Tracking & Test Management Workspace
               </p>
             </div>
@@ -119,30 +136,36 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Center: Project Switcher Dropdown */}
           <div className="flex items-center">
-            <div className="relative group">
-              <div className="flex items-center bg-slate-100/90 dark:bg-slate-800/90 hover:bg-slate-200/80 dark:hover:bg-slate-700/80 border border-slate-300/80 dark:border-slate-700 rounded-xl p-0.5 sm:p-1 transition shadow-xs">
-                <div className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1 sm:py-1.5 cursor-pointer">
-                  <FolderKanban className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-600 dark:text-blue-400" />
+            <div className="relative" ref={projectDropdownRef}>
+              <button
+                type="button"
+                onClick={() => setIsProjectDropdownOpen(!isProjectDropdownOpen)}
+                className="flex items-center bg-slate-100/90 dark:bg-slate-800/90 hover:bg-slate-200/80 dark:hover:bg-slate-700/80 border border-slate-300/80 dark:border-slate-700 rounded-xl p-0.5 sm:p-1 transition shadow-xs text-left"
+              >
+                <div className="flex items-center gap-1 sm:gap-2 px-1.5 sm:px-2.5 py-1 sm:py-1.5 cursor-pointer">
+                  <FolderKanban className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-600 dark:text-blue-400 shrink-0" />
                   <div className="text-left">
-                    <span className="text-[9px] sm:text-[10px] uppercase font-semibold text-slate-500 dark:text-slate-400 block leading-none">
+                    <span className="text-[8px] sm:text-[10px] uppercase font-semibold text-slate-500 dark:text-slate-400 block leading-none">
                       Project
                     </span>
                     <div className="flex items-center gap-1 mt-0.5">
-                      <span className="text-xs sm:text-sm font-bold text-slate-900 dark:text-slate-100 max-w-[100px] sm:max-w-[200px] truncate">
+                      <span className="text-xs sm:text-sm font-bold text-slate-900 dark:text-slate-100 max-w-[65px] xs:max-w-[110px] sm:max-w-[180px] truncate block">
                         {activeProject?.name || 'Select'}
                       </span>
                       {activeProject?.prefix && (
-                        <span className="hidden sm:inline-block px-1.5 py-0.2 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded text-[10px] font-mono font-bold">
+                        <span className="hidden md:inline-block px-1.5 py-0.2 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded text-[10px] font-mono font-bold">
                           {activeProject.prefix}
                         </span>
                       )}
                     </div>
                   </div>
-                  <ChevronDown className="w-3.5 h-3.5 text-slate-400 ml-0.5" />
+                  <ChevronDown className={`w-3.5 h-3.5 text-slate-400 ml-0.5 transition-transform ${isProjectDropdownOpen ? 'rotate-180' : ''}`} />
                 </div>
+              </button>
 
-                {/* Dropdown Menu */}
-                <div className="absolute left-0 top-full mt-1.5 w-64 sm:w-72 bg-white dark:bg-slate-900 rounded-xl shadow-2xl border border-slate-200 dark:border-slate-800 p-2 hidden group-hover:block z-40 animate-fadeIn">
+              {/* Dropdown Menu */}
+              {isProjectDropdownOpen && (
+                <div className="absolute left-0 top-full mt-1.5 w-64 sm:w-72 bg-white dark:bg-slate-900 rounded-xl shadow-2xl border border-slate-200 dark:border-slate-800 p-2 z-40 animate-fadeIn">
                   <div className="px-2 py-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400">
                     Switch Project
                   </div>
@@ -150,7 +173,10 @@ export const Header: React.FC<HeaderProps> = ({
                     {projects.map((proj) => (
                       <button
                         key={proj.id}
-                        onClick={() => onSelectProject(proj.id)}
+                        onClick={() => {
+                          onSelectProject(proj.id);
+                          setIsProjectDropdownOpen(false);
+                        }}
                         className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium text-left transition ${
                           proj.id === activeProject?.id
                             ? 'bg-blue-50 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 font-semibold'
@@ -167,7 +193,10 @@ export const Header: React.FC<HeaderProps> = ({
 
                   <div className="border-t border-slate-100 dark:border-slate-800 my-1 pt-1 space-y-1">
                     <button
-                      onClick={onOpenNewProjectModal}
+                      onClick={() => {
+                        setIsProjectDropdownOpen(false);
+                        onOpenNewProjectModal();
+                      }}
                       className="w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition"
                     >
                       <Plus className="w-3.5 h-3.5" />
@@ -175,16 +204,23 @@ export const Header: React.FC<HeaderProps> = ({
                     </button>
                     {activeProject && (
                       <button
-                        onClick={onOpenEditProjectModal}
+                        onClick={() => {
+                          setIsProjectDropdownOpen(false);
+                          onOpenEditProjectModal();
+                        }}
                         className="w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition"
                       >
                         <Edit3 className="w-3.5 h-3.5" />
                         Edit Project Settings
                       </button>
                     )}
-                    {projects.length > 1 && (
+                    {/* Delete Project is ALWAYS accessible whenever activeProject exists (even if it's the last one) */}
+                    {activeProject && (
                       <button
-                        onClick={onDeleteProject}
+                        onClick={() => {
+                          setIsProjectDropdownOpen(false);
+                          onDeleteProject();
+                        }}
                         className="w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 transition"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
@@ -193,11 +229,11 @@ export const Header: React.FC<HeaderProps> = ({
                     )}
                   </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
 
-          {/* Right Action Bar (Desktop) */}
+          {/* Right Action Bar */}
           <div className="flex items-center gap-1 sm:gap-2">
             {/* Cloudinary Settings Button */}
             <button
@@ -244,12 +280,12 @@ export const Header: React.FC<HeaderProps> = ({
             <button
               onClick={onToggleSound}
               title={isSoundEnabled ? 'Sound Effects Enabled (Click to mute)' : 'Sound Effects Muted'}
-              className="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl border border-transparent hover:border-slate-200 dark:hover:border-slate-700 transition active:scale-95"
+              className="p-1.5 sm:p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl border border-transparent hover:border-slate-200 dark:hover:border-slate-700 transition active:scale-95"
             >
               {isSoundEnabled ? (
-                <Volume2 className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                <Volume2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-600 dark:text-blue-400" />
               ) : (
-                <VolumeX className="w-4 h-4 text-slate-400" />
+                <VolumeX className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-400" />
               )}
             </button>
 
@@ -257,12 +293,12 @@ export const Header: React.FC<HeaderProps> = ({
             <button
               onClick={onToggleDarkMode}
               title={isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-              className="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl border border-transparent hover:border-slate-200 dark:hover:border-slate-700 transition active:scale-95"
+              className="p-1.5 sm:p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl border border-transparent hover:border-slate-200 dark:hover:border-slate-700 transition active:scale-95"
             >
               {isDarkMode ? (
-                <Sun className="w-4 h-4 text-amber-400" />
+                <Sun className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-400" />
               ) : (
-                <Moon className="w-4 h-4 text-slate-600" />
+                <Moon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-600" />
               )}
             </button>
 
@@ -279,16 +315,17 @@ export const Header: React.FC<HeaderProps> = ({
             <button
               type="button"
               onClick={onOpenNewIssueModal}
-              className="flex items-center gap-1.5 px-3 sm:px-4 py-2 text-xs sm:text-sm font-bold text-white bg-blue-600 hover:bg-blue-500 active:scale-95 rounded-xl shadow-md shadow-blue-500/25 transition shrink-0"
+              className="flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-bold text-white bg-blue-600 hover:bg-blue-500 active:scale-95 rounded-xl shadow-md shadow-blue-500/25 transition shrink-0"
             >
-              <Plus className="w-4 h-4 stroke-[2.5]" />
-              <span>Log Issue</span>
+              <Plus className="w-3.5 h-3.5 sm:w-4 sm:h-4 stroke-[2.5]" />
+              <span className="hidden xs:inline">Log Issue</span>
+              <span className="xs:hidden">Log</span>
             </button>
 
             {/* Mobile Menu Hamburger */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition"
+              className="lg:hidden p-1.5 sm:p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition"
               title="More actions"
             >
               {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -306,18 +343,99 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Mobile Dropdown Menu Drawer */}
         {isMobileMenuOpen && (
-          <div className="lg:hidden py-3 border-t border-slate-200 dark:border-slate-800 space-y-2 animate-fadeIn">
+          <div className="lg:hidden py-3 border-t border-slate-200 dark:border-slate-800 space-y-3 animate-fadeIn">
             {/* Backend status row for mobile */}
-            <div className="flex items-center justify-between px-3 py-1.5 bg-slate-100 dark:bg-slate-800/60 rounded-lg text-xs">
+            <div className="flex items-center justify-between px-3 py-2 bg-slate-100 dark:bg-slate-800/60 rounded-xl text-xs">
               <span className="text-slate-500 dark:text-slate-400 font-medium">Database Backend</span>
               <span className={`inline-flex items-center gap-1.5 font-bold ${
                 isBackendOnline ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'
               }`}>
                 <span className={`w-2 h-2 rounded-full ${isBackendOnline ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'}`} />
-                {isBackendOnline ? 'Java Spring Boot (port 3001)' : 'IndexedDB (Offline)'}
+                {isBackendOnline ? 'Java Spring Boot Live' : 'IndexedDB (Offline)'}
               </span>
             </div>
 
+            {/* Mobile Project Management Section */}
+            <div className="p-3 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200/80 dark:border-slate-700/80 space-y-2.5">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                  Active Project
+                </span>
+                <span className="text-xs font-bold text-blue-600 dark:text-blue-400 font-mono">
+                  [{activeProject?.prefix || 'QA'}]
+                </span>
+              </div>
+              <div className="text-sm font-bold text-slate-900 dark:text-white truncate">
+                {activeProject?.name || 'No Project Selected'}
+              </div>
+
+              {projects.length > 1 && (
+                <div className="pt-1">
+                  <span className="text-[10px] font-semibold text-slate-400 block mb-1.5">Switch Project:</span>
+                  <div className="flex flex-wrap gap-1.5 max-h-28 overflow-y-auto">
+                    {projects.map((p) => (
+                      <button
+                        key={p.id}
+                        onClick={() => {
+                          onSelectProject(p.id);
+                          setIsMobileMenuOpen(false);
+                        }}
+                        className={`px-2.5 py-1 text-xs rounded-lg font-medium transition ${
+                          p.id === activeProject?.id
+                            ? 'bg-blue-600 text-white font-bold shadow-xs'
+                            : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-100'
+                        }`}
+                      >
+                        {p.name}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Project Action Buttons */}
+              <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-200 dark:border-slate-700">
+                <button
+                  onClick={() => {
+                    onOpenNewProjectModal();
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className="flex items-center justify-center gap-1.5 px-2.5 py-1.5 bg-blue-50 dark:bg-blue-950/40 hover:bg-blue-100 text-blue-700 dark:text-blue-300 rounded-lg text-xs font-semibold transition"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  New Project
+                </button>
+
+                {activeProject && (
+                  <button
+                    onClick={() => {
+                      onOpenEditProjectModal();
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className="flex items-center justify-center gap-1.5 px-2.5 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 rounded-lg text-xs font-semibold transition"
+                  >
+                    <Edit3 className="w-3.5 h-3.5" />
+                    Edit Settings
+                  </button>
+                )}
+
+                {/* Delete Project Button: ALWAYS accessible even when 1 project remains */}
+                {activeProject && (
+                  <button
+                    onClick={() => {
+                      setIsMobileMenuOpen(false);
+                      onDeleteProject();
+                    }}
+                    className="col-span-2 flex items-center justify-center gap-1.5 px-2.5 py-2 bg-red-50 dark:bg-red-950/40 hover:bg-red-100 text-red-600 dark:text-red-400 rounded-lg text-xs font-bold transition border border-red-200 dark:border-red-900"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    Delete Current Project
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Quick Actions Grid */}
             <div className="grid grid-cols-2 gap-2 text-xs">
               <button
                 onClick={() => {

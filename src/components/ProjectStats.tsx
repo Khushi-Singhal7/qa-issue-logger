@@ -73,7 +73,7 @@ export const ProjectStats: React.FC<ProjectStatsProps> = ({
   ];
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 sm:gap-3 mb-5">
+    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-3 mb-4 sm:mb-5">
       {stats.map((stat) => {
         const Icon = stat.icon;
         const isActive = currentStatusFilter === stat.statusKey;
@@ -81,22 +81,22 @@ export const ProjectStats: React.FC<ProjectStatsProps> = ({
           <button
             key={stat.label}
             onClick={() => onFilterByStatus(stat.statusKey)}
-            className={`p-3 sm:p-3.5 rounded-xl border text-left transition-all duration-150 cursor-pointer active:scale-98 shadow-xs ${
+            className={`p-2.5 sm:p-3.5 rounded-xl border text-left transition-all duration-150 cursor-pointer active:scale-98 shadow-xs ${
               stat.color
             } ${isActive ? stat.activeColor : 'opacity-85 hover:opacity-100 hover:shadow-xs'}`}
           >
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] sm:text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider truncate">
+            <div className="flex items-center justify-between gap-1">
+              <span className="text-[9px] xs:text-[10px] sm:text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider truncate block">
                 {stat.label}
               </span>
               <Icon className="w-3.5 h-3.5 opacity-60 shrink-0" />
             </div>
-            <div className="mt-1.5 sm:mt-2 flex items-baseline justify-between">
-              <span className="text-xl sm:text-2xl font-black tracking-tight text-slate-900 dark:text-white">
+            <div className="mt-1 sm:mt-2 flex items-baseline justify-between gap-1">
+              <span className="text-lg sm:text-2xl font-black tracking-tight text-slate-900 dark:text-white">
                 {stat.count}
               </span>
               {stat.label === 'Total Issues' && criticalCount > 0 && (
-                <span className="text-[10px] font-bold text-red-600 dark:text-red-300 bg-red-100 dark:bg-red-950/80 border border-red-200 dark:border-red-800 px-1.5 py-0.5 rounded-md flex items-center gap-0.5">
+                <span className="text-[9px] sm:text-[10px] font-bold text-red-600 dark:text-red-300 bg-red-100 dark:bg-red-950/80 border border-red-200 dark:border-red-800 px-1 sm:px-1.5 py-0.5 rounded-md flex items-center gap-0.5 shrink-0">
                   <ShieldAlert className="w-2.5 h-2.5" />
                   {criticalCount} Crit
                 </span>

@@ -516,11 +516,14 @@ export const App: React.FC = () => {
   };
 
   const handleDeleteProjectClick = () => {
-    if (!activeProject || projects.length <= 1) return;
+    if (!activeProject) return;
+    const isLastProject = projects.length <= 1;
     setConfirmModal({
       isOpen: true,
       title: `Delete Project "${activeProject.name}"?`,
-      message: `Are you sure you want to delete this project and all its ${rawIssues.length} logged issues? This action cannot be reversed.`,
+      message: isLastProject
+        ? `Are you sure you want to delete this project and all its ${rawIssues.length} logged issues? Since this is the only remaining project, a clean fresh workspace will be created.`
+        : `Are you sure you want to delete this project and all its ${rawIssues.length} logged issues? This action cannot be reversed.`,
       onConfirm: async () => {
         await db.issues.where('projectId').equals(activeProject.id).delete();
         await db.projects.delete(activeProject.id);
@@ -531,6 +534,23 @@ export const App: React.FC = () => {
         const remaining = await db.projects.toArray();
         if (remaining.length > 0) {
           setActiveProjectId(remaining[0].id);
+        } else {
+          // All projects deleted - auto-generate a fresh empty project so app stays functional
+          const newProjectId = `proj-${Date.now()}`;
+          const now = new Date().toISOString();
+          const defaultProj: Project = {
+            id: newProjectId,
+            name: 'New Project',
+            prefix: 'QA',
+            description: 'Default project created after deleting all projects',
+            createdAt: now,
+            updatedAt: now,
+          };
+          await db.projects.add(defaultProj);
+          if (isBackendOnline) {
+            apiSaveProject(defaultProj).catch((err) => console.warn('Backend save project failed:', err));
+          }
+          setActiveProjectId(newProjectId);
         }
         setConfirmModal((prev) => ({ ...prev, isOpen: false }));
       },
@@ -647,12 +667,14 @@ export const App: React.FC = () => {
                 {isBackendOnline ? (
                   <>
                     <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                    <span>Connected to Java Spring Boot (H2 Database)</span>
+                    <span className="hidden sm:inline">Connected to Java Spring Boot (H2 Database)</span>
+                    <span className="sm:hidden font-semibold">Java Spring Boot Live</span>
                   </>
                 ) : (
                   <>
                     <Sparkles className="w-3.5 h-3.5 text-blue-500" />
-                    <span>IndexedDB Persistent Storage (Offline)</span>
+                    <span className="hidden sm:inline">IndexedDB Persistent Storage (Offline)</span>
+                    <span className="sm:hidden font-semibold">IndexedDB (Local)</span>
                   </>
                 )}
               </span>
