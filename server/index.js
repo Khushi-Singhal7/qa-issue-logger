@@ -283,11 +283,23 @@ app.post('/api/sync', (req, res) => {
   }
 });
 
+// Production: Serve React frontend from dist folder
+const distDir = path.join(__dirname, '../dist');
+if (fs.existsSync(distDir)) {
+  app.use(express.static(distDir));
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api') || req.path.startsWith('/uploads')) {
+      return next();
+    }
+    res.sendFile(path.join(distDir, 'index.html'));
+  });
+}
+
 // Start Server
-app.listen(PORT, '127.0.0.1', () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`====================================================`);
   console.log(`  QA Issue Logger Backend REST Server Active!`);
-  console.log(`  URL: http://127.0.0.1:${PORT}`);
+  console.log(`  URL: http://localhost:${PORT}`);
   console.log(`  Database: SQLite (server/data/qa_logger.db)`);
   console.log(`====================================================`);
 });

@@ -92,7 +92,7 @@ export const Header: React.FC<HeaderProps> = ({
                 <div
                   title={
                     isBackendOnline
-                      ? 'Connected to Node.js & SQLite REST API Server (port 3001)'
+                      ? 'Connected to Java Spring Boot & H2 Database (port 3001)'
                       : 'Offline Mode: Saving to browser IndexedDB'
                   }
                   className={`hidden sm:inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-semibold rounded-full border transition cursor-default ${
@@ -108,7 +108,7 @@ export const Header: React.FC<HeaderProps> = ({
                         : 'bg-amber-500'
                     }`}
                   />
-                  <span>{isBackendOnline ? 'SQLite Live' : 'Offline (Local)'}</span>
+                  <span>{isBackendOnline ? 'Java Spring Boot Live' : 'Offline (Local)'}</span>
                 </div>
               </div>
               <p className="text-[11px] text-slate-500 dark:text-slate-400 hidden lg:block">
@@ -314,7 +314,7 @@ export const Header: React.FC<HeaderProps> = ({
                 isBackendOnline ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'
               }`}>
                 <span className={`w-2 h-2 rounded-full ${isBackendOnline ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'}`} />
-                {isBackendOnline ? 'SQLite Live (port 3001)' : 'IndexedDB (Offline)'}
+                {isBackendOnline ? 'Java Spring Boot (port 3001)' : 'IndexedDB (Offline)'}
               </span>
             </div>
 

@@ -647,7 +647,7 @@ export const App: React.FC = () => {
                 {isBackendOnline ? (
                   <>
                     <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                    <span>Connected to SQLite Backend (REST API)</span>
+                    <span>Connected to Java Spring Boot (H2 Database)</span>
                   </>
                 ) : (
                   <>
